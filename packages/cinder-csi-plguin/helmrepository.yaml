@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: openstack-cinder-csi
+  namespace: os-tenant
+spec:
+  interval: 5m
+  url: https://kubernetes.github.io/cloud-provider-openstack/

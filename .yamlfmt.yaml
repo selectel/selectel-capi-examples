@@ -1,0 +1,18 @@
+---
+# .yamlfmt
+doublestar: true  # Support ** globs
+gitignore_excludes: true  # Respect .gitignore
+
+formatter:
+  type: basic  # Simple non-aligning formatter
+  indent: 2  # Two-space indents
+  eof_newline: true
+  include_document_start: true  # Always add '---'
+  indentless_arrays: false  # Keep arrays indented
+  retain_line_breaks: true  # Preserve blank lines/long lines
+  pad_line_comments: 2  # One space before inline comments
+  trim_trailing_whitespace: true  # Remove trailing spaces
+  line_ending: lf  # Add lf line endings
+
+lint:
+  quiet: true  # Show file list in -lint mode

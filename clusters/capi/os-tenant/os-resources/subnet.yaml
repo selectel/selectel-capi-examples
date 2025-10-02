@@ -1,0 +1,20 @@
+---
+# подсеть для кластера
+apiVersion: openstack.k-orc.cloud/v1alpha1
+kind: Subnet
+metadata:
+  name: os-tenant-subnet
+  namespace: os-tenant
+spec:
+  resource:
+    cidr: 172.11.0.0/24  # любая /24 сеть
+    ipVersion: 4
+    name: os-tenant-subnet
+    networkRef: os-tenant-net
+    routerRef: os-tenant-router
+    dnsNameservers:  # стандартные dns серверы selectel
+      - 188.93.16.19
+      - 188.93.17.19
+  cloudCredentialsRef:
+    cloudName: openstack
+    secretName: cloud-config

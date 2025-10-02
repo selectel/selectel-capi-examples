@@ -1,0 +1,56 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-provider-kind
+  namespace: kube-system
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: cloud-provider-kind
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp:
+      labels:
+        name: cloud-provider-kind
+    spec:
+      containers:
+        - args: [-enable-lb-port-mapping]
+          image: registry.k8s.io/cloud-provider-kind/cloud-controller-manager:v0.7.0
+          imagePullPolicy: IfNotPresent
+          name: cloud-provider-kind
+          ports: []
+          resources:
+            limits:
+              memory: 170Mi
+            requests:
+              cpu: 100m
+              memory: 70Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              add: [NET_BIND_SERVICE]
+              drop: [ALL]
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: dockersock
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+      volumes:
+        - name: dockersock
+          hostPath:
+            path: /var/run/docker.sock

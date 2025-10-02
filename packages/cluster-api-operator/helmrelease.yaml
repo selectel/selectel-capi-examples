@@ -1,0 +1,62 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: capi-operator
+  namespace: default
+spec:
+  dependsOn:
+    - name: cert-manager
+  targetNamespace: capi-operator-system
+  storageNamespace: capi-operator-system
+  interval: 1m
+  timeout: 15m
+  chart:
+    spec:
+      chart: cluster-api-operator
+      version: 0.23.0
+      sourceRef:
+        kind: HelmRepository
+        name: cluster-api-operator
+      interval: 5m
+  releaseName: capi-operator
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+    crds: CreateReplace
+  upgrade:
+    remediation:
+      retries: 3
+    crds: CreateReplace
+  test:
+    enable: true
+  driftDetection:
+    mode: enabled
+  values:
+    infrastructure:
+      docker: {}
+      openstack: {}
+    core:
+      cluster-api: {}
+    controlPlane:
+      kubeadm: {}
+    bootstrap:
+      kubeadm: {}
+    manager:
+      featureGates:
+        kubeadm:
+          MachinePool: true
+          ClusterResourceSet: true
+          MachineSetPreflightChecks: true
+          ClusterTopology: true
+        docker:
+          MachinePool: true
+          ClusterResourceSet: true
+          MachineSetPreflightChecks: true
+          ClusterTopology: true
+        core:
+          MachinePool: true
+          ClusterResourceSet: true
+          MachineSetPreflightChecks: true
+          ClusterTopology: true

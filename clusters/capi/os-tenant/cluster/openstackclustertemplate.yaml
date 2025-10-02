@@ -1,0 +1,23 @@
+# Описание cluster для capo (cluster api provider openstack)
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: OpenStackClusterTemplate
+metadata:
+  name: os-tenant-cluster
+  namespace: os-tenant
+spec:
+  template:
+    spec:
+      apiServerLoadBalancer:
+        enabled: true  # балансировщик нагрузки для apiserver
+        network:
+          filter:
+            name: os-tenant-net  # предсозданная сеть из ../os-resources/network.yaml
+      disableExternalNetwork: false
+      network:
+        filter:
+          name: os-tenant-net
+      controlPlaneAvailabilityZones: [ru-3b, ru-3c]  # Зоны доступности (указаны актуальные свободные зоны)
+      identityRef:
+        cloudName: openstack
+        name: cloud-config  # предсозданный cloud config

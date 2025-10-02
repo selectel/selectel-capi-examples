@@ -1,0 +1,115 @@
+# Базовые настройки для cilium (без ingress, с hubble)
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cilium
+spec:
+  kubeConfig:
+    secretRef:
+      name: os-tenant-cluster-kubeconfig
+  values:
+    k8sServiceHost: auto
+    cluster:
+      name: os-tenant-cluster
+      id: 1
+    rollOutCiliumPods: false
+    operator:
+      enabled: true
+    bandwidthManager:
+      enabled: false
+      bbr: false
+    envoy:
+      enabled: true
+    bpf:
+      masquerade: true
+    kubeProxyReplacement: true
+    gatewayAPI:
+      enabled: false
+      secretsNamespace:
+        enabled: false
+    hostFirewall:
+      enabled: true
+    hostPort:
+      enabled: true
+    socketLB:
+      enabled: true
+      hostNamespaceOnly: true
+    nodePort:
+      enabled: true
+      enableHealthCheck: true
+      enableHealthCheckLoadBalancerIP: true
+    externalIPs:
+      enabled: true
+    ingressController:
+      enabled: false
+      default: true
+      secretsNamespace:
+        create: true
+    bgpControlPlane:
+      enabled: true
+      secretsNamespace:
+        create: false
+    egressGateway:
+      enabled: false
+    hubble:
+      enabled: true
+      ui:
+        enabled: false
+      metrics:
+        enableOpenMetrics: true
+        enabled:
+          - dns
+          - drop
+          - tcp
+          - flow
+          - port-distribution
+          - icmp
+          - httpV2:exemplars=true
+    localRedirectPolicy: false
+    ipam:
+      mode: cluster-pool
+      operator:
+        clusterPoolIPv4PodCIDRList: 10.244.0.0/16  # должен совпадать с cluster.spec.clusterNetwork.pods.cidrBlocks
+    enableInternalTrafficPolicy: true
+    enableLBIPAM: true
+---
+# occm настроен чтобы использовать cloud config (clouds.yaml). Инсталляция occm проводится в management cluster (при желании в managed)
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: occm
+  namespace: occm
+spec:
+  values:
+    secret:
+      enabled: true
+      create: true
+      name: cloud-config-toml
+    # указание kubeconfig, который создаётся cluster api
+    controllerExtraArgs: |-
+      - --kubeconfig=/etc/kubeconfig
+    extraVolumes:
+      - name: kubeconfig
+        secret:
+          secretName: os-tenant-cluster-kubeconfig
+      - name: cloud-config
+        secret:
+          secretName: cloud-config
+    extraVolumeMounts:
+      - mountPath: /etc/kubeconfig
+        name: kubeconfig
+        readOnly: true
+        subPath: value
+      - mountPath: /etc/openstack
+        name: cloud-config
+        readOnly: true
+        subPath: clouds.yaml
+    extraEnv:
+      - name: OS_CLIENT_CONFIG_FILE
+        value: /etc/openstack
+    # Параметр для использования clouds.yaml
+    cloudConfigContents: |-
+      [Global]
+      use-clouds=true
+      cloud=openstack

@@ -1,0 +1,25 @@
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  name: docker-tenant-cluster
+  namespace: docker-tenant
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks: [10.244.0.0/16]
+    serviceDomain: cluster.local
+    services:
+      cidrBlocks: [10.96.0.0/12]
+  topology:
+    class: docker-tenant-cluster
+    controlPlane:
+      metadata: {}
+      replicas: 1
+    variables: []
+    version: v1.32.2
+    workers:
+      machineDeployments:
+        - class: docker-tenant-default-worker
+          name: md-0
+          replicas: 3

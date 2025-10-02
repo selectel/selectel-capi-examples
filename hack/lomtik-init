@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+TYPE=${1:-bare}
+CLUSTERPATH=${2:-'clusters'}
+
+case "$TYPE" in
+	*)
+		pushd ./$CLUSTERPATH/kind/
+		kind create cluster --config kind-"$TYPE".yaml || true
+		popd
+		;;
+esac
+
+case "$TYPE" in
+	*)
+			helm upgrade --install -n flux-system --create-namespace flux oci://ghcr.io/fluxcd-community/charts/flux2 --wait
+			kubectl apply -k .
+		;;
+esac

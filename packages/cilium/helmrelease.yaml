@@ -1,0 +1,103 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cilium
+  namespace: default
+spec:
+  targetNamespace: kube-system
+  storageNamespace: kube-system
+  interval: 15m
+  timeout: 15m
+  chart:
+    spec:
+      chart: cilium
+      version: 1.17.2
+      sourceRef:
+        kind: HelmRepository
+        name: cilium
+      interval: 5m
+  releaseName: cilium
+  install:
+    createNamespace: true
+    remediation:
+      retries: -1
+    crds: CreateReplace
+  upgrade:
+    remediation:
+      retries: -1
+    crds: CreateReplace
+  test:
+    enable: false
+  driftDetection:
+    mode: enabled
+  values:
+    k8sServiceHost: auto
+    ipam:
+      mode: kubernetes
+    # rollOutCiliumPods: true
+    kubeProxyReplacement: true
+    operator:
+      enabled: true
+      rollOutPods: true
+    # bandwidthManager:
+    #   enabled: true
+    #   bbr: true
+    # bpf:
+    #   masquerade: true
+    envoy:
+      enabled: false
+    gatewayAPI:
+      enabled: false
+      secretsNamespace:
+        enabled: false
+    # hostFirewall:
+    #   enabled: true
+    hostPort:
+      enabled: true
+    socketLB:
+      enabled: true
+      hostNamespaceOnly: true
+    nodePort:
+      enabled: true
+      enableHealthCheck: true
+      enableHealthCheckLoadBalancerIP: false
+    externalIPs:
+      enabled: true
+    ingressController:
+      enabled: true
+      default: true
+      loadbalancerMode: shared
+      secretsNamespace:
+        create: true
+      service:
+        type: LoadBalancer
+        insecureNodePort: 30000
+        secureNodePort: 30001
+        labels:
+          lbippool-name: external-ingress
+    # bgpControlPlane:
+    #   enabled: true
+    #   secretsNamespace:
+    #     create: false
+    # localRedirectPolicy: false
+    # egressGateway:
+    #   enabled: false
+    hubble:
+      enabled: true
+      relay:
+        enabled: true
+      ui:
+        enabled: true
+        ingress:
+          enabled: false
+      metrics:
+        enableOpenMetrics: true
+        enabled:
+          - dns
+          - drop
+          - tcp
+          - flow
+          - port-distribution
+          - icmp
+          - httpV2:exemplars=true

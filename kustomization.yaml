@@ -1,0 +1,9 @@
+---
+# Набор ресурсов, устанавливаемых в management cluster для работы с capi,openstack,docker
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - packages/cert-manager
+  - packages/orc
+  - packages/cluster-api-operator
+  - packages/cloud-provider-kind

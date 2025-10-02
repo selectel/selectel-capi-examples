@@ -1,0 +1,3 @@
+#!/bin/sh
+kind delete clusters -A
+docker rm -f cloud-provider-kind

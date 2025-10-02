@@ -1,0 +1,14 @@
+---
+# Сеть для кластера
+apiVersion: openstack.k-orc.cloud/v1alpha1
+kind: Network
+metadata:
+  name: os-tenant-net
+  namespace: os-tenant
+spec:
+  resource:
+    name: os-tenant-net
+    portSecurityEnabled: true
+  cloudCredentialsRef:
+    cloudName: openstack
+    secretName: cloud-config

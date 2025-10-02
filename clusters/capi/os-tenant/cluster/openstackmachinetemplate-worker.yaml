@@ -1,0 +1,23 @@
+# шаблон machine для worker
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: OpenStackMachineTemplate
+metadata:
+  name: os-tenant-default-worker-machinetemplate
+  namespace: os-tenant
+spec:
+  template:
+    spec:
+      flavor: SL1.2-4096-32  # openstack flavor, описание ресурсов сервера
+      image:
+        filter:
+          name: kube-v1.32.2
+      ports:
+        - description: os-tenant
+          network:
+            filter:
+              name: os-tenant-net  # предсозданная сеть из ../os-resources/network.yaml
+          fixedIPs:
+            - subnet:
+                filter:
+                  name: os-tenant-subnet  # предсозданная подсеть из ../os-resources/subnet.yaml

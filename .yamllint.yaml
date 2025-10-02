@@ -1,0 +1,20 @@
+---
+extends: default  # Start from "relaxed" preset rules
+
+rules:  # Rule overrides
+  new-line-at-end-of-file: enable
+  indentation:  # Indentation settings
+    spaces: 2  # Use 2 spaces per indent
+    indent-sequences: whatever  # Sequence dashes can match parent or indent — no strict rule
+    check-multi-line-strings: false  # Don’t enforce indent inside multi‑line strings
+  colons:  # Colon spacing rules
+    max-spaces-before: 0  # No space allowed before colon
+    max-spaces-after: -1  # Disable checks for spaces after colon
+  line-length:  # Max line length rules
+    max: 500  # Allow fairly long lines (500 chars)
+    allow-non-breakable-words: true  # Don’t break long single words
+    allow-non-breakable-inline-mappings: true  # Don’t break inline mappings
+  empty-lines:  # Rules for blank lines
+    max: 2  # Allow at most 2 consecutive empty lines
+    max-start: 0  # No empty lines at start of file
+    max-end: 0  # No empty lines at end of file

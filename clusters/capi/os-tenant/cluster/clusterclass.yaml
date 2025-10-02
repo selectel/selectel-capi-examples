@@ -1,0 +1,54 @@
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: ClusterClass
+metadata:
+  name: os-tenant-cluster
+  namespace: os-tenant
+spec:
+  controlPlane:
+    machineHealthCheck:
+      unhealthyConditions:
+        - status: Unknown
+          timeout: 300s
+          type: Ready
+        - status: 'False'
+          timeout: 300s
+          type: Ready
+    machineInfrastructure:
+      ref:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+        kind: OpenStackMachineTemplate
+        name: os-tenant-control-plane
+    ref:
+      apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+      kind: KubeadmControlPlaneTemplate
+      name: os-tenant-control-plane
+  infrastructure:
+    ref:
+      apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+      kind: OpenStackClusterTemplate
+      name: os-tenant-cluster
+  patches: []
+  variables: []
+  workers:
+    machineDeployments:
+      - class: os-tenant-default-worker
+        machineHealthCheck:
+          unhealthyConditions:
+            - status: Unknown
+              timeout: 300s
+              type: Ready
+            - status: 'False'
+              timeout: 300s
+              type: Ready
+        template:
+          bootstrap:
+            ref:
+              apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+              kind: KubeadmConfigTemplate
+              name: os-tenant-default-worker-bootstraptemplate
+          infrastructure:
+            ref:
+              apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+              kind: OpenStackMachineTemplate
+              name: os-tenant-default-worker-machinetemplate

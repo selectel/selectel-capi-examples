@@ -1,0 +1,54 @@
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: ClusterClass
+metadata:
+  name: docker-tenant-cluster
+  namespace: docker-tenant
+spec:
+  controlPlane:
+    machineHealthCheck:
+      unhealthyConditions:
+        - status: Unknown
+          timeout: 300s
+          type: Ready
+        - status: 'False'
+          timeout: 300s
+          type: Ready
+    machineInfrastructure:
+      ref:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+        kind: DockerMachineTemplate
+        name: docker-tenant-control-plane
+    ref:
+      apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+      kind: KubeadmControlPlaneTemplate
+      name: docker-tenant-control-plane
+  infrastructure:
+    ref:
+      apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+      kind: DockerClusterTemplate
+      name: docker-tenant-cluster
+  patches: []
+  variables: []
+  workers:
+    machineDeployments:
+      - class: docker-tenant-default-worker
+        machineHealthCheck:
+          unhealthyConditions:
+            - status: Unknown
+              timeout: 300s
+              type: Ready
+            - status: 'False'
+              timeout: 300s
+              type: Ready
+        template:
+          bootstrap:
+            ref:
+              apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+              kind: KubeadmConfigTemplate
+              name: docker-tenant-default-worker-bootstraptemplate
+          infrastructure:
+            ref:
+              apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+              kind: DockerMachineTemplate
+              name: docker-tenant-default-worker-machinetemplate
