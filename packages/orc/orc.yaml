@@ -2005,7 +2005,7 @@ spec:
                       items:
                         maxLength: 1024
                         type: string
-                      maxItems: 32
+                      maxItems: 1024 # !!!!!!!!!!! хотфикс crd от SELECTEL
                       type: array
                       x-kubernetes-list-type: atomic
                     tags:
@@ -2464,7 +2464,7 @@ spec:
                       - status
                       - type
                     type: object
-                  maxItems: 32
+                  maxItems: 1024
                   type: array
                   x-kubernetes-list-map-keys:
                     - type
@@ -2535,7 +2535,7 @@ spec:
                             maxLength: 1024
                             type: string
                         type: object
-                      maxItems: 32
+                      maxItems: 1024
                       type: array
                       x-kubernetes-list-type: atomic
                     macAddress:

@@ -51,8 +51,8 @@ kubectl apply -k clusters/capi/os-tenant
 ```
 Для os-tenant все дополнительные описания с пояснениями содержатся в комментариях к манифестам
 
-## Ручные операции
-подключить роутер к внешней сети требуется вручную из-за бага в k-orc - https://github.com/k-orc/openstack-resource-controller/issues/527#issuecomment-3354871148
+## Временные фиксы
+Из-за бага в k-orc - https://github.com/k-orc/openstack-resource-controller/issues/527#issuecomment-3354871148 было сделано ручное исравление customresourcedefinition в файле packages/orc/orc.yaml (строка 2008)
 
 ## Используемые инструменты:
 | Name                     | Github link                                            |

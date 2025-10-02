@@ -9,8 +9,8 @@ spec:
   resource:
     name: os-tenant-router
     # внешний гейт для получения белого ip loadbalancer
-    # externalGateways:
-    #   - networkRef: os-tenant-extarnal-net # ждём фикс https://github.com/k-orc/openstack-resource-controller/issues/527#issuecomment-3354871148
+    externalGateways:
+      - networkRef: os-tenant-external-net # ждём фикс https://github.com/k-orc/openstack-resource-controller/issues/527#issuecomment-3354871148
   cloudCredentialsRef:
     cloudName: openstack
     secretName: cloud-config

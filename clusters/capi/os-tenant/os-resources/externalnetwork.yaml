@@ -1,15 +1,15 @@
 # Ждём фикс https://github.com/k-orc/openstack-resource-controller/issues/527#issuecomment-3354871148
-# apiVersion: openstack.k-orc.cloud/v1alpha1
-# kind: Network
-# metadata:
-#   name: os-tenant-external-net
-#   namespace: os-tenant
-# spec:
-#   managementPolicy: unmanaged
-#   import:
-#     filter:
-#       external: true
-#       name: external-network
-#   cloudCredentialsRef:
-#     cloudName: openstack
-#     secretName: cloud-config
+apiVersion: openstack.k-orc.cloud/v1alpha1
+kind: Network
+metadata:
+  name: os-tenant-external-net
+  namespace: os-tenant
+spec:
+  managementPolicy: unmanaged
+  import:
+    filter:
+      external: true
+      name: external-network
+  cloudCredentialsRef:
+    cloudName: openstack
+    secretName: cloud-config
